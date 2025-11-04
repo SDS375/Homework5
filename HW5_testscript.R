@@ -18,7 +18,7 @@ test_that("check validity method exists", {
 test_that("check validity method", {
     expect_true({
         x <- new("sparse_numeric",
-                 value = c(1, 2, 0, 1),
+                 value = c(1, 2, 3, 1),
                  pos = c(1L, 2L, 3L, 5L),
                  length = 5L)
         validObject(x)
