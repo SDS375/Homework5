@@ -128,3 +128,35 @@ test_that("all zero wrong length", {
 })
 
 
+test_that("numeric <-> sparse_numeric round trip", {
+  v <- c(0, 3.5, 0, -2, 0, 0, 4)
+  x <- as(v, "sparse_numeric")
+  v_back <- as(x, "numeric")
+  expect_equal(v_back, v)
+})
+
+
+test_that("sparse_mult basic overlap", {
+  x <- as(c(0, 2, 0, 3, 0), "sparse_numeric")
+  y <- as(c(1, 0, 0, 4, 0), "sparse_numeric")
+  result <- sparse_mult(x, y)
+  expect_s4_class(result, "sparse_numeric")
+  expect_equal(as(result, "numeric"), c(0, 0, 0, 12, 0))
+})
+
+test_that("sparse_mult with disjoint supports gives all zeros", {
+  x <- as(c(1, 0, 2, 0), "sparse_numeric")
+  y <- as(c(0, 3, 0, 4), "sparse_numeric")
+  result <- sparse_mult(x, y)
+  expect_s4_class(result, "sparse_numeric")
+  expect_equal(as(result, "numeric"), numeric(4))
+})
+
+test_that("operators + - * match sparse_* functions", {
+  x <- as(c(0, 1, 0, 2), "sparse_numeric")
+  y <- as(c(3, 0, 4, 0), "sparse_numeric")
+  
+  expect_equal(as(x + y, "numeric"), as(sparse_add(x, y), "numeric"))
+  expect_equal(as(x - y, "numeric"), as(sparse_sub(x, y), "numeric"))
+  expect_equal(as(x * y, "numeric"), as(sparse_mult(x, y), "numeric"))
+})
